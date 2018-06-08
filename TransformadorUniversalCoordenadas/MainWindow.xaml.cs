@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Digi21.OpenGis.CoordinateTransformations;
 using System.Globalization;
 using System.Diagnostics;
 using Digi21.OpenGis.CoordinateSystems;
+using Digi21.OpenGis.CoordinateTransformations;
 using Digi21.OpenGis.Epsg;
 
 namespace TransformadorUniversalCoordenadas
@@ -22,36 +14,30 @@ namespace TransformadorUniversalCoordenadas
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         #region Campos privados
-        private CoordinateSystemFactory fábricaSrc = new CoordinateSystemFactory();
-        private CoordinateTransformationFactory fábricaTransformaciones = new CoordinateTransformationFactory();
+        private readonly CoordinateSystemFactory fábricaSrc = new CoordinateSystemFactory();
+        private readonly CoordinateTransformationFactory fábricaTransformaciones = new CoordinateTransformationFactory();
 
-        CoordinateSystem _origen;
-        private CoordinateSystem origen
+        private CoordinateSystem origen;
+        private CoordinateSystem Origen
         {
-            get
-            {
-                return _origen;
-            }
+            get => origen;
             set
             {
-                _origen = value;
+                origen = value;
                 NombreSrcOrigen = value.Name;
             }
         }
 
-        CoordinateSystem _destino;
-        private CoordinateSystem destino
+        private CoordinateSystem destino;
+        private CoordinateSystem Destino
         {
-            get
-            {
-                return _destino;
-            }
+            get => destino;
             set
             {
-                _destino = value;
+                destino = value;
                 NombreSrcDestino = value.Name;
             }
         }
@@ -61,8 +47,8 @@ namespace TransformadorUniversalCoordenadas
         #region Propiedades de dependencia
         public string NombreSrcOrigen
         {
-            get { return (string)GetValue(NombreSrcOrigenProperty); }
-            set { SetValue(NombreSrcOrigenProperty, value); }
+            get => (string)GetValue(NombreSrcOrigenProperty);
+            set => SetValue(NombreSrcOrigenProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for NombreSrcOrigen.  This enables animation, styling, binding, etc...
@@ -71,8 +57,8 @@ namespace TransformadorUniversalCoordenadas
 
         public string NombreSrcDestino
         {
-            get { return (string)GetValue(NombreSrcDestinoProperty); }
-            set { SetValue(NombreSrcDestinoProperty, value); }
+            get => (string)GetValue(NombreSrcDestinoProperty);
+            set => SetValue(NombreSrcDestinoProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for NombreSrcDestino.  This enables animation, styling, binding, etc...
@@ -81,8 +67,8 @@ namespace TransformadorUniversalCoordenadas
 
         public string CoordenadasDestino
         {
-            get { return (string)GetValue(CoordenadasDestinoProperty); }
-            set { SetValue(CoordenadasDestinoProperty, value); }
+            get => (string)GetValue(CoordenadasDestinoProperty);
+            set => SetValue(CoordenadasDestinoProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for CoordenadasDestino.  This enables animation, styling, binding, etc...
@@ -95,12 +81,18 @@ namespace TransformadorUniversalCoordenadas
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = this;
+            DataContext = this;
 
-            origen = fábricaSrc.CreateFromWkt(@"COMPD_CS[""ETRS89 / UTM zone 30N + EGM08_REDNAP Península"", PROJCS[""ETRS89 / UTM zone 30N"", GEOGCS[""ETRS89"", DATUM[""European Terrestrial Reference System 1989"", SPHEROID[""GRS 1980"", 6378137, 298.257222101, AUTHORITY[""EPSG"", ""7019""]], AUTHORITY[""EPSG"", ""6258""]], PRIMEM[""Greenwich"", 0, AUTHORITY[""EPSG"", ""8901""]], UNIT[""°"", 0.01745329251994328, AUTHORITY[""EPSG"", ""9122""]], AXIS[""Lat"", North], AXIS[""Long"", East], AUTHORITY[""EPSG"", ""4258""]], PROJECTION[""Transverse_Mercator""], PARAMETER[""latitude_of_origin"", 0], PARAMETER[""central_meridian"", -2.999999999999997], PARAMETER[""scale_factor"", 0.9996], PARAMETER[""false_easting"", 500000], PARAMETER[""false_northing"", 0], PARAMETER[""semi_major"", 6378137], PARAMETER[""semi_minor"", 6356752.314140356], UNIT[""metros"", 1, AUTHORITY[""EPSG"", ""9001""]], AXIS[""E"", East], AXIS[""N"", North], AUTHORITY[""EPSG"", ""25830""]], VERT_CS[""EGM08_REDNAP Península"", VERT_DATUM[""EGM2008 geoid"", 2005, AUTHORITY[""EPSG"", ""1027""]], UNIT[""metros"", 1, AUTHORITY[""EPSG"", ""9001""]], AXIS[""H"", Up], AUTHORITY[""EPSG"", ""69036406""]]]");
-            destino = origen;
-
-            AsignaTransformación(origen, destino);
+            try
+            {
+                Origen = fábricaSrc.CreateFromWkt(@"GEOGCS[""WGS 84"",DATUM[""World Geodetic System 1984"",SPHEROID[""WGS 84"",6378137,298.257223563,AUTHORITY[""EPSG"",""7030""]],AUTHORITY[""EPSG"",""6326""]],PRIMEM[""Greenwich"",0,AUTHORITY[""EPSG"",""8901""]],UNIT[""degrees"",0.01745329251994328,AUTHORITY[""EPSG"",""9122""]],AXIS[""Lat"",North],AXIS[""Long"",East],AXIS[""h"",Up],AUTHORITY[""EPSG"",""4979""]]");
+                Destino = Origen;
+                AsignaTransformación(Origen, Destino);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
         #endregion
 
@@ -118,28 +110,24 @@ namespace TransformadorUniversalCoordenadas
 
         private void BotonLocalizarSrcOrigen_Click(object sender, RoutedEventArgs e)
         {
-            var wktOrigen = EpsgManager.DialogSelectCrs("Selecciona el sistema de referencia de coordenadas origen", origen);
+            var wktOrigen = EpsgManager.DialogSelectCrs("Selecciona el sistema de referencia de coordenadas o", Origen);
 
             var nuevoOrigen = fábricaSrc.CreateFromWkt(wktOrigen);
 
-            if (AsignaTransformación(nuevoOrigen, destino))
-            {
-                origen = nuevoOrigen;
-                TransformaPuntos();
-            }
+            if (!AsignaTransformación(nuevoOrigen, Destino)) return;
+            Origen = nuevoOrigen;
+            TransformaPuntos();
         }
 
         private void BotonLocalizarSrcDestino_Click(object sender, RoutedEventArgs e)
         {
-            var wktDestino = EpsgManager.DialogSelectCrs("Selecciona el sistema de referencia de coordenadas destino", destino);
+            var wktDestino = EpsgManager.DialogSelectCrs("Selecciona el sistema de referencia de coordenadas d", Destino);
 
             var nuevoDestino = fábricaSrc.CreateFromWkt(wktDestino);
 
-            if (AsignaTransformación(origen, nuevoDestino))
-            {
-                destino = nuevoDestino;
-                TransformaPuntos();
-            }
+            if (!AsignaTransformación(Origen, nuevoDestino)) return;
+            Destino = nuevoDestino;
+            TransformaPuntos();
         }
 
         private void coordenadasOrigen_TextChanged(object sender, TextChangedEventArgs e)
@@ -156,23 +144,23 @@ namespace TransformadorUniversalCoordenadas
         #endregion
 
         #region Implementación
-        private bool AsignaTransformación(CoordinateSystem origen, CoordinateSystem destino)
+        private bool AsignaTransformación(CoordinateSystem o, CoordinateSystem d)
         {
             try
             {
                 transformación = fábricaTransformaciones.CreateFromCoordinateSystems(
-                    origen,
-                    destino,
+                    o,
+                    d,
                     SelectTransformationHelper.DialogSelectTransformation,
                     CreateVerticalTransformationHelper.DialogCreateVerticalTransformation);
                 return true;
             }
             catch (Exception e)
             {
-                MostrarExcepción dlg = new MostrarExcepción
+                var dlg = new MostrarExcepción
                 {
-                    Origen = origen.Name,
-                    Destino = destino.Name,
+                    Origen = o.Name,
+                    Destino = d.Name,
                     Mensaje = e.Message
                 };
 
@@ -183,14 +171,14 @@ namespace TransformadorUniversalCoordenadas
 
         private void TransformaPuntos()
         {
-            string resultado = string.Empty;
+            var resultado = string.Empty;
 
             try
             {
                 var líneas = CoordenadasOrigen.Text.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var línea in líneas)
                 {
-                    var columnas = línea.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    var columnas = línea.Split(new[] { ' ', ',', '\t' }, StringSplitOptions.RemoveEmptyEntries);
                     if (columnas.Length != 3)
                         throw new Exception("La línea: \"" + línea + "\" no tiene tres columnas");
 
@@ -208,9 +196,9 @@ namespace TransformadorUniversalCoordenadas
                         transformado[2]);
                 }
             }
-            catch (Exception)
+            catch
             {
-
+                // ignored
             }
 
             CoordenadasDestino = resultado;
