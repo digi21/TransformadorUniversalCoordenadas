@@ -61,14 +61,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Digi21.Epsg, Version=17.0.0.0, Culture=neutral, PublicKeyToken=6751d7d8a775bb8c, processorArchitecture=AMD64">
-      <HintPath>..\packages\Digi21.Epsg.x64.17.0.0\lib\net46\Digi21.Epsg.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Digi21.OpenGIS, Version=17.0.0.0, Culture=neutral, PublicKeyToken=6751d7d8a775bb8c, processorArchitecture=AMD64">
-      <HintPath>..\packages\Digi21.OpenGis.x64.17.0.0\lib\net46\Digi21.OpenGIS.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -131,7 +123,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -140,6 +131,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\IconoDigi21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Digi21.Epsg">
+      <Version>17.0.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
